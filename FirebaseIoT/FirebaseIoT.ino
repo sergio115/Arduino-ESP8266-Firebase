@@ -26,22 +26,9 @@
 #define WIFI_SSID "c6a88a"
 #define WIFI_PASSWORD "280642427"
 
-struct statusLed 
-{
-  bool working;
-  String miLed; 
-};
-
-struct statusLed led;
-
-void sendStructure(byte *structurePointer, int structureLength)
-{
-    Serial.write(structurePointer, structureLength);
-}
-
 void setup() {
   Serial.begin(9600);
-
+  
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting");
@@ -54,72 +41,33 @@ void setup() {
   Serial.println(WiFi.localIP());
   
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  
+  // use Json 
+  StaticJsonBuffer<200> jsonBuffer;
+  
+  char json[] =
+ {
+    "s01": {
+      "Sensor": "led",
+      "Status": "HIGH"
+    },
+    "s02": {
+      "Sensor": "proximidad",
+      "Distancia": 15
+    },
+    "Data":"[HIGH,15]"
+  }
+
+  JsonObject& root = jsonBuffer.parseObject(json);
+
+  const char* sensor = root["EstadoLed"];
+  bool time = root["time"];
+  double latitude = root["data"][0];
+  double longitude = root["data"][1];
+
 }
 
-int n = 0;
-
 void loop() {
-  /*// set value
-  Firebase.setFloat("number", 42.0);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-  
-  // update value
-  Firebase.setFloat("number", 43.0);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-
-  // get value 
-  Serial.print("number: ");
-  Serial.println(Firebase.getFloat("number"));
-  delay(1000);
-
-  // remove value
-  Firebase.remove("number");
-  delay(1000);
-
-  // set string value
-  Firebase.setString("message", "hello world");
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /message failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-  
-  // set bool value
-  Firebase.setBool("truth", false);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /truth failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-
-  // append a new value to /logs
-  String name = Firebase.pushInt("logs", n++);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("pushing /logs failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  Serial.print("pushed: /logs/");
-  Serial.println(name);
-  delay(1000);
-*/
   Firebase.setBool("EstadoLed", false);
   led.working = Firebase.getBool("EstadoLed");
   sendStructure((byte*)&led, sizeof(led));
