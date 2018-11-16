@@ -1,22 +1,3 @@
-//
-// Copyright 2015 Google Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-
-// FirebaseDemo_ESP8266 is a sample that demo the different functions
-// of the FirebaseArduino API.
-
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
@@ -42,34 +23,30 @@ void setup() {
   
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   
-  // use Json 
+  // declare buffer Json 
   StaticJsonBuffer<200> jsonBuffer;
-  
+}
+
+void loop() {    
   char json[] =
- {
+  {
     "s01": {
       "Sensor": "led",
-      "Status": "HIGH"
+      "Status": "0"
     },
     "s02": {
       "Sensor": "proximidad",
       "Distancia": 15
-    },
-    "Data":"[HIGH,15]"
+    }
   }
 
   JsonObject& root = jsonBuffer.parseObject(json);
 
-  const char* sensor = root["EstadoLed"];
-  bool time = root["time"];
-  double latitude = root["data"][0];
-  double longitude = root["data"][1];
+  bool status = root["Status"];
+  int distancia = root["Distancia"];
 
-}
-
-void loop() {
-  Firebase.setBool("EstadoLed", false);
-  led.working = Firebase.getBool("EstadoLed");
+  Firebase.setBool("Status", false);
+  status = Firebase.getBool("Status");
   sendStructure((byte*)&led, sizeof(led));
   delay(1000);
   
@@ -77,12 +54,4 @@ void loop() {
   led.working = Firebase.getBool("EstadoLed");
   sendStructure((byte*)&led, sizeof(led));
   delay(1000);
-
-  Firebase.setString("message", "LOW");
-  led.miLed = Firebase.getString("message");
-  sendStructure((byte*)&led, sizeof(led));
-  
-  Firebase.setString("message", "HIGH");
-  led.miLed = Firebase.getString("message");
-  sendStructure((byte*)&led, sizeof(led));
 }
