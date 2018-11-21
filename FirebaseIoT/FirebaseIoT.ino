@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
+#include <ArduinoJson.h>
 
 // Set these to run example.
 #define FIREBASE_HOST "arduino-esp8266-iot.firebaseio.com"  // https://arduino-esp8266-iot.firebaseio.com/
@@ -23,35 +24,23 @@ void setup() {
   
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   
+
+}
   // declare buffer Json 
   StaticJsonBuffer<200> jsonBuffer;
-}
 
-void loop() {    
-  char json[] =
-  {
-    "s01": {
-      "Sensor": "led",
-      "Status": "0"
-    },
-    "s02": {
-      "Sensor": "proximidad",
-      "Distancia": 15
-    }
-  }
-
-  JsonObject& root = jsonBuffer.parseObject(json);
-
-  bool status = root["Status"];
-  int distancia = root["Distancia"];
-
-  Firebase.setBool("Status", false);
-  status = Firebase.getBool("Status");
-  sendStructure((byte*)&led, sizeof(led));
-  delay(1000);
   
-  Firebase.setBool("EstadoLed", true);
-  led.working = Firebase.getBool("EstadoLed");
-  sendStructure((byte*)&led, sizeof(led));
+void loop() {    
+  JsonObject& root = jsonBuffer.parseObject(Serial);
+  //JsonObject& root = jsonBuffer.parse(Serial.read());
+  bool led = root["statusLed"];
+  String cadena = root["prueba"];
+
+  //root.printTo(Serial);
+  Serial.println(cadena);
+  Serial.println("Prueba");
+
+  Firebase.setBool("statusLed", led);
+  Firebase.setString("prueba", cadena);
   delay(1000);
 }
