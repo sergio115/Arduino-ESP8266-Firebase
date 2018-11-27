@@ -28,25 +28,27 @@ void setup() {
   Serial.print("connected: ");
   Serial.println(WiFi.localIP());
   
-  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-
-  
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); 
 }
 
 void loop() {
-  const size_t bufferSize = JSON_OBJECT_SIZE(2) + 30;
-  DynamicJsonBuffer jsonBuffer(bufferSize);
+  //const size_t bufferSize = JSON_OBJECT_SIZE(2) + 30;
+  //DynamicJsonBuffer jsonBuffer(bufferSize);
   
+  StaticJsonBuffer<200> jsonBuffer;
   
   JsonObject& root = jsonBuffer.parseObject(serie_esp);
   
   bool statusLed = root["statusLed"]; // true
-  const char* prueba = root["prueba"]; // "Hola"
+  float prueba = root["prueba"]; // 10.5
     
     Firebase.setBool("statusLed", statusLed);
-    Firebase.setString("prueba", prueba);
+    Firebase.setFloat("prueba", prueba);
 
     root.printTo(Serial);
+
+    //delay(1000);
+    yield();
 
     //Serial.print((char)serie_esp.read());
 }
