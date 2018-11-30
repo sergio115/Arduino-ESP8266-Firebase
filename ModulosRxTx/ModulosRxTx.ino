@@ -11,13 +11,13 @@ void setup() {
   // put your setup code here, to run once:
   serie_virtual.begin(9600);
   //Serial.begin(9600);
+  Serial.end();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
-  //const size_t bufferSize = JSON_OBJECT_SIZE(2);
-  //DynamicJsonBuffer jsonBuffer(bufferSize);
+
+  valorActual = "0";
   
   StaticJsonBuffer<200> jsonBuffer;
   
@@ -27,26 +27,21 @@ void loop() {
 
   root.printTo(valorActual);
 
-  if(valorActual != valorAnterior)
+  delay(30);
+  if(!valorActual.equals(valorAnterior))
   {
-    root.printTo(Serial);
-  }
+    root.printTo(serie_virtual);
+    //root.printTo(Serial);
+    //Serial.print(valorActual);
+    //Serial.print(valorAnterior);   
+  } 
+  
   valorAnterior = valorActual;
-  
-  /*
-  
-  root.printTo(serie_virtual);
 
-   
-  delay(7000);
+  //root["statusLed"] = 0; 
+  //root["prueba"] = 15.3; 
+  //root.printTo(serie_virtual);
 
-  root["statusLed"] = 0;
-  root["prueba"] = 15.3;
-
-
-  root.printTo(serie_virtual);
-*/
-   
-  delay(7000);
+  //delay(7000);
   //yield();
 }

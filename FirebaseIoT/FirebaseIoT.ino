@@ -6,10 +6,10 @@
 // Set these to run example.
 #define FIREBASE_HOST "arduino-esp8266-iot.firebaseio.com"  // https://arduino-esp8266-iot.firebaseio.com/
 #define FIREBASE_AUTH "pBPtIFktSZMHQhJABOPCcEL4rhvm9u490zstLCNb"
-//#define WIFI_SSID "c6a88a"
-//#define WIFI_PASSWORD "280642427"
-#define WIFI_SSID "LSyC-WIFI"
-#define WIFI_PASSWORD "a1a2a3itd"
+#define WIFI_SSID "c6a88a"
+#define WIFI_PASSWORD "280642427"
+//#define WIFI_SSID "LSyC-WIFI"
+//#define WIFI_PASSWORD "a1a2a3itd"
 
 SoftwareSerial serie_esp(0,2);  //(Tx,Rx)
 
@@ -41,12 +41,14 @@ void loop() {
   
   bool statusLed = root["statusLed"]; // true
   float prueba = root["prueba"]; // 10.5
-    
+
+  if(serie_esp.available() > 0)
+  {
     Firebase.setBool("statusLed", statusLed);
     Firebase.setFloat("prueba", prueba);
-
+  
     root.printTo(Serial);
-
+  }
     //delay(1000);
     yield();
 
