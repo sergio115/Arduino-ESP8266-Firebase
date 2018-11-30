@@ -6,10 +6,10 @@
 // Set these to run example.
 #define FIREBASE_HOST "arduino-esp8266-iot.firebaseio.com"  // https://arduino-esp8266-iot.firebaseio.com/
 #define FIREBASE_AUTH "pBPtIFktSZMHQhJABOPCcEL4rhvm9u490zstLCNb"
-#define WIFI_SSID "c6a88a"
-#define WIFI_PASSWORD "280642427"
-//#define WIFI_SSID "LSyC-WIFI"
-//#define WIFI_PASSWORD "a1a2a3itd"
+//#define WIFI_SSID "c6a88a"
+//#define WIFI_PASSWORD "280642427"
+#define WIFI_SSID "LSyC-WIFI"
+#define WIFI_PASSWORD "a1a2a3itd"
 
 SoftwareSerial serie_esp(0,2);  //(Tx,Rx)
 

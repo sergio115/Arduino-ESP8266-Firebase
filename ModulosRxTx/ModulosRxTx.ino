@@ -5,7 +5,7 @@ SoftwareSerial serie_virtual(2,3);  //(Tx,Rx)
 
 int pinLED = 8;
 bool statusLed;
-String a = "a", b, c;
+String valorAnterior, valorActual;
 
 void setup() {
   // put your setup code here, to run once:
@@ -25,7 +25,16 @@ void loop() {
   root["statusLed"] = 1;
   root["prueba"] = 10.5;
 
+  root.printTo(valorActual);
 
+  if(valorActual != valorAnterior)
+  {
+    root.printTo(Serial);
+  }
+  valorAnterior = valorActual;
+  
+  /*
+  
   root.printTo(serie_virtual);
 
    
@@ -36,7 +45,7 @@ void loop() {
 
 
   root.printTo(serie_virtual);
-
+*/
    
   delay(7000);
   //yield();
