@@ -42,14 +42,15 @@ void loop() {
   int temperatura = root["temperatura"];
   int humedad = root["humedad"];
 
-  /*if(serie_esp.available() > 0)
-  {*/
+  //root.printTo(Serial);
+  if(root.success())
+  {
     Firebase.setInt("temperatura", temperatura);
     Firebase.setInt("humedad", humedad);
   
     root.printTo(Serial);
     //Serial.print("succes");
-  /*} else {
+  }/* else {
     Serial.print(".");
   }*/
     //delay(1000);
