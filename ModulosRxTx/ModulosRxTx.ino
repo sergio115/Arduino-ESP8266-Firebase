@@ -1,5 +1,6 @@
 #include <ArduinoJson.h>
 #include <SoftwareSerial.h>
+#include <DHT.h>
 
 SoftwareSerial serie_virtual(2,3);  //(Tx,Rx)
 
@@ -7,11 +8,17 @@ int pinLED = 8;
 bool statusLed;
 String valorAnterior, valorActual;
 
+//Sensor de humedad y temperatura DHT11
+int sensor = 13;
+int temp, humedad;
+DHT dht(sensor, DHT11);
+
 void setup() {
   // put your setup code here, to run once:
   serie_virtual.begin(9600);
   //Serial.begin(9600);
-  Serial.end();
+  dht.begin();
+  
 }
 
 void loop() {
@@ -19,11 +26,15 @@ void loop() {
 
   valorActual = "0";
   
+  humedad = dht.readHumidity();
+  temp = dht.readTemperature();
+
+  
   StaticJsonBuffer<200> jsonBuffer;
   
   JsonObject& root = jsonBuffer.createObject();
-  root["statusLed"] = 1;
-  root["prueba"] = 10.5;
+  root["temperatura"] = temp;
+  root["humedad"] = humedad;
 
   root.printTo(valorActual);
 
@@ -42,6 +53,6 @@ void loop() {
   //root["prueba"] = 15.3; 
   //root.printTo(serie_virtual);
 
-  //delay(7000);
+  delay(7000);
   //yield();
 }

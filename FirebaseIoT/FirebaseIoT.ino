@@ -39,16 +39,19 @@ void loop() {
   
   JsonObject& root = jsonBuffer.parseObject(serie_esp);
   
-  bool statusLed = root["statusLed"]; // true
-  float prueba = root["prueba"]; // 10.5
+  int temperatura = root["temperatura"];
+  int humedad = root["humedad"];
 
-  if(serie_esp.available() > 0)
-  {
-    Firebase.setBool("statusLed", statusLed);
-    Firebase.setFloat("prueba", prueba);
+  /*if(serie_esp.available() > 0)
+  {*/
+    Firebase.setInt("temperatura", temperatura);
+    Firebase.setInt("humedad", humedad);
   
     root.printTo(Serial);
-  }
+    //Serial.print("succes");
+  /*} else {
+    Serial.print(".");
+  }*/
     //delay(1000);
     yield();
 
