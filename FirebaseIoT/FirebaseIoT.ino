@@ -12,6 +12,7 @@
 //#define WIFI_PASSWORD "a1a2a3itd"
 
 SoftwareSerial serie_esp(0,2);  //(Tx,Rx)
+String intensidadLluvia;
 
 void setup() {
   Serial.begin(9600);
@@ -41,13 +42,32 @@ void loop() {
   
   int temperatura = root["temperatura"];
   int humedad = root["humedad"];
+  int luz = root["luz"];
+  int lluvia =  root["lluvia"];
+
+  switch(lluvia) 
+  { 
+    case 1:
+      intensidadLluvia = "Debil";
+      break;  
+    case 2:
+      intensidadLluvia = "Moderada"; 
+      break; 
+    case 3:
+      intensidadLluvia = "Fuerte";
+      break; 
+    default:
+      intensidadLluvia = "No hay lluvia";
+  }
 
   //root.printTo(Serial);
   if(root.success())
   {
     Firebase.setInt("temperatura", temperatura);
     Firebase.setInt("humedad", humedad);
-  
+    Firebase.setInt("luz", luz);
+    Firebase.setString("lluvia", intensidadLluvia);
+    
     root.printTo(Serial);
     //Serial.print("succes");
   }/* else {
