@@ -20,7 +20,6 @@ int datosLluvia, intensidadLluvia;
 
 void setup() {
   serie_virtual.begin(9600);
-  //Serial.begin(9600);
   dht.begin();  
 }
 
@@ -35,15 +34,15 @@ void loop() {
 
   if(datosLluvia > 900)
   {
-    intensidadLluvia = 0;  //no hay
+    intensidadLluvia = 0;
   } else if(datosLluvia > 600) 
   {
-    intensidadLluvia = 1; //debil
+    intensidadLluvia = 1;   //Debil
   } else if(datosLluvia > 400) 
   {
-    intensidadLluvia = 2; //moderada
+    intensidadLluvia = 2;   //Moderada
   } else{
-    intensidadLluvia = 3; //fuerte
+    intensidadLluvia = 3;   //Fuerte
   }
 
   StaticJsonBuffer<200> jsonBuffer;
@@ -59,17 +58,10 @@ void loop() {
   delay(30);
   if(!valorActual.equals(valorAnterior))
   {
-    root.printTo(serie_virtual);
-    //root.printTo(Serial);
-    //Serial.print(valorActual);
-    //Serial.print(valorAnterior);   
+    root.printTo(serie_virtual); 
   } 
   
   valorAnterior = valorActual;
-
-  //root["statusLed"] = 0; 
-  //root["prueba"] = 15.3; 
-  //root.printTo(serie_virtual);
 
   delay(7000);
   //yield();

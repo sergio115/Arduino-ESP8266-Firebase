@@ -33,9 +33,6 @@ void setup() {
 }
 
 void loop() {
-  //const size_t bufferSize = JSON_OBJECT_SIZE(2) + 30;
-  //DynamicJsonBuffer jsonBuffer(bufferSize);
-  
   StaticJsonBuffer<200> jsonBuffer;
   
   JsonObject& root = jsonBuffer.parseObject(serie_esp);
@@ -60,7 +57,6 @@ void loop() {
       intensidadLluvia = "No hay lluvia";
   }
 
-  //root.printTo(Serial);
   if(root.success())
   {
     Firebase.setInt("temperatura", temperatura);
@@ -70,11 +66,7 @@ void loop() {
     
     root.printTo(Serial);
     //Serial.print("succes");
-  }/* else {
-    Serial.print(".");
-  }*/
-    //delay(1000);
-    yield();
-
-    //Serial.print((char)serie_esp.read());
+  }
+  //delay(1000);
+  yield();
 }
