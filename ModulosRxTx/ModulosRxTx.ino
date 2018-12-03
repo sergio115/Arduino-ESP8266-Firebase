@@ -1,52 +1,68 @@
 #include <ArduinoJson.h>
 #include <SoftwareSerial.h>
+#include <DHT.h>
 
 SoftwareSerial serie_virtual(2,3);  //(Tx,Rx)
-
-int pinLED = 8;
-bool statusLed;
 String valorAnterior, valorActual;
 
+//Sensor de humedad y temperatura DHT11
+int sensorDht = 13;
+int temp, humedad;
+DHT dht(sensorDht, DHT11);
+
+// Sensor de luz (Fotoresistencia) KY-018
+int sensorLuz = 2; // Entrada analogica
+int luzAnalog, luz;
+
+// Sensor de lluvia
+int sensorLluvia = 0; // Entrada analogica
+int datosLluvia, intensidadLluvia;
+
 void setup() {
-  // put your setup code here, to run once:
   serie_virtual.begin(9600);
-  //Serial.begin(9600);
+  dht.begin();  
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  valorActual = "0";
   
-  //const size_t bufferSize = JSON_OBJECT_SIZE(2);
-  //DynamicJsonBuffer jsonBuffer(bufferSize);
-  
+  humedad = dht.readHumidity();
+  temp = dht.readTemperature();
+  luzAnalog = analogRead(sensorLuz);
+  luz = map(luzAnalog, 1023 ,0, 0 ,100); 
+  datosLluvia = analogRead(sensorLluvia);
+
+  if(datosLluvia > 900)
+  {
+    intensidadLluvia = 0;
+  } else if(datosLluvia > 600) 
+  {
+    intensidadLluvia = 1;   //Debil
+  } else if(datosLluvia > 400) 
+  {
+    intensidadLluvia = 2;   //Moderada
+  } else{
+    intensidadLluvia = 3;   //Fuerte
+  }
+
   StaticJsonBuffer<200> jsonBuffer;
   
   JsonObject& root = jsonBuffer.createObject();
-  root["statusLed"] = 1;
-  root["prueba"] = 10.5;
+  root["temperatura"] = temp;
+  root["humedad"] = humedad;
+  root["luz"] = luz;
+  root["lluvia"] = intensidadLluvia;
 
   root.printTo(valorActual);
 
-  if(valorActual != valorAnterior)
+  delay(30);
+  if(!valorActual.equals(valorAnterior))
   {
-    root.printTo(Serial);
-  }
+    root.printTo(serie_virtual); 
+  } 
+  
   valorAnterior = valorActual;
-  
-  /*
-  
-  root.printTo(serie_virtual);
 
-   
-  delay(7000);
-
-  root["statusLed"] = 0;
-  root["prueba"] = 15.3;
-
-
-  root.printTo(serie_virtual);
-*/
-   
   delay(7000);
   //yield();
 }

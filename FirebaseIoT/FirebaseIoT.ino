@@ -6,12 +6,13 @@
 // Set these to run example.
 #define FIREBASE_HOST "arduino-esp8266-iot.firebaseio.com"  // https://arduino-esp8266-iot.firebaseio.com/
 #define FIREBASE_AUTH "pBPtIFktSZMHQhJABOPCcEL4rhvm9u490zstLCNb"
-//#define WIFI_SSID "c6a88a"
-//#define WIFI_PASSWORD "280642427"
-#define WIFI_SSID "LSyC-WIFI"
-#define WIFI_PASSWORD "a1a2a3itd"
+#define WIFI_SSID "c6a88a"
+#define WIFI_PASSWORD "280642427"
+//#define WIFI_SSID "LSyC-WIFI"
+//#define WIFI_PASSWORD "a1a2a3itd"
 
 SoftwareSerial serie_esp(0,2);  //(Tx,Rx)
+String intensidadLluvia;
 
 void setup() {
   Serial.begin(9600);
@@ -32,23 +33,40 @@ void setup() {
 }
 
 void loop() {
-  //const size_t bufferSize = JSON_OBJECT_SIZE(2) + 30;
-  //DynamicJsonBuffer jsonBuffer(bufferSize);
-  
   StaticJsonBuffer<200> jsonBuffer;
   
   JsonObject& root = jsonBuffer.parseObject(serie_esp);
   
-  bool statusLed = root["statusLed"]; // true
-  float prueba = root["prueba"]; // 10.5
+  int temperatura = root["temperatura"];
+  int humedad = root["humedad"];
+  int luz = root["luz"];
+  int lluvia =  root["lluvia"];
+
+  switch(lluvia) 
+  { 
+    case 1:
+      intensidadLluvia = "Debil";
+      break;  
+    case 2:
+      intensidadLluvia = "Moderada"; 
+      break; 
+    case 3:
+      intensidadLluvia = "Fuerte";
+      break; 
+    default:
+      intensidadLluvia = "No hay lluvia";
+  }
+
+  if(root.success())
+  {
+    Firebase.setInt("temperatura", temperatura);
+    Firebase.setInt("humedad", humedad);
+    Firebase.setInt("luz", luz);
+    Firebase.setString("lluvia", intensidadLluvia);
     
-    Firebase.setBool("statusLed", statusLed);
-    Firebase.setFloat("prueba", prueba);
-
     root.printTo(Serial);
-
-    //delay(1000);
-    yield();
-
-    //Serial.print((char)serie_esp.read());
+    //Serial.print("succes");
+  }
+  //delay(1000);
+  yield();
 }
